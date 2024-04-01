@@ -1,0 +1,102 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <stack>
+
+using namespace std;
+
+struct Health {
+    string name;
+    string description;
+    string symptom;
+    string treatment;
+};    
+
+void addHealth(vector<Health>& healths) {
+    Health newHealth;
+    cout << "masukkan nama penyakit: ";
+    cin >> newHealth.name;
+    cout << "masukkan deskripsi penyakit: ";
+    cin.ignore();
+    getline(cin, newHealth.description);
+    cout << "masukkan gejala penyakit: ";
+    cin >> newHealth.symptom;
+    cout << "masukkan pengobatan penyakit: ";
+    cin.ignore();
+    getline(cin, newHealth.treatment);
+
+    healths.push_back(newHealth);
+}
+
+void searchHealth(const vector<Health>& healths) {
+    string keyword;
+    cout << "masukkan kata kunci penyakit: ";
+    cin >> keyword;
+
+    vector<string> tokens;
+    string token;
+    for (int i = 0; i < keyword.length(); i++) {
+        if (keyword[i] == ' ') {
+            tokens.push_back(token);
+            token = "";
+        } else {
+            token += keyword[i];
+        }
+    }
+    tokens.push_back(token);
+
+    stack<Health> stack;
+    for (const auto& health : healths) {
+        bool found = true;
+        for (const auto& token : tokens) {
+            if (health.name.find(token) == string::npos && health.description.find(token) == string::npos && health.symptom.find(token) == string::npos && health.treatment.find(token) == string::npos) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            stack.push(health);
+        }
+    }
+
+    if (stack.empty()) {
+        cout << "penyakit tidak dapat ditemukan";
+    } else {
+        cout << "penyakit yang ditemukan: " << stack.top().name << endl;
+        cout << "desripsi penyakit: " << stack.top().description << endl;
+        cout << "gejala penyakit: " << stack.top().symptom << endl;
+        cout << "pengobatan penyakit: " << stack.top().treatment << endl;
+        stack.pop();
+    }
+}
+
+int main() {
+    vector<Health> healths;
+    int choice;
+
+    do {
+        cout << "1. Tambahkan penyakit\n";
+        cout << "2. Cari penyakit\n";
+        cout << "3. keluar\n";
+        cout << "pilih opsi: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addHealth(healths);
+                break;
+            case 2:
+                searchHealth(healths);
+                break;
+            case 3:
+                break;
+            default:
+                cout << "pilihan tidak valid\n";
+        }
+    } while (choice != 3);
+
+    return 0;
+}
+ 
